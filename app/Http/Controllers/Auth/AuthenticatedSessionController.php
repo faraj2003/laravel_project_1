@@ -28,18 +28,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if (auth()->user()->role === 'admin') {
-            return redirect('/admin/courses');
-        }
-
+        // Check for Admin Role
         if (auth()->user()->role === 'admin') {
             return redirect()->route('admin.courses.index');
         }
 
+        // Default Student Dashboard
         return redirect()->intended(route('dashboard', absolute: false));
-
     }
-
     /**
      * Destroy an authenticated session.
      */

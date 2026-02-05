@@ -1,80 +1,100 @@
 <x-app-layout>
-    <div class="max-w-3xl mx-auto py-10">
+    <div class="max-w-4xl mx-auto py-8">
 
-        <h1 class="text-2xl font-bold mb-6">
-            Create New Course
-        </h1>
+        {{-- Page Header --}}
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-900">
+                Create New Course
+            </h1>
 
-        {{-- Validation Errors --}}
-        @if ($errors->any())
-            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                <ul class="list-disc pl-5">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+            <p class="mt-2 text-gray-600">
+                Fill in the details below to add a new course.
+            </p>
+        </div>
 
-        <form method="POST" action="{{ route('admin.courses.store') }}">
+        {{-- Create Course Form --}}
+        <form
+            method="POST"
+            action="{{ route('admin.courses.store') }}"
+            enctype="multipart/form-data"
+            class="space-y-6"
+        >
             @csrf
 
             {{-- Title --}}
-            <div class="mb-4">
-                <label class="block font-medium mb-1">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">
                     Course Title
                 </label>
 
                 <input
                     type="text"
                     name="title"
-                    class="w-full border rounded px-3 py-2"
+                    value="{{ old('title') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     required
                 >
             </div>
 
             {{-- Description --}}
-            <div class="mb-4">
-                <label class="block font-medium mb-1">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">
                     Description
                 </label>
 
                 <textarea
                     name="description"
                     rows="4"
-                    class="w-full border rounded px-3 py-2"
-                ></textarea>
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                >{{ old('description') }}</textarea>
             </div>
 
-            <div class="mb-4">
-    <label class="block text-sm font-medium text-gray-700 mb-1">
-        Price
-    </label>
+            {{-- Price --}}
+            <div>
+                <label class="block text-sm font-medium text-gray-700">
+                    Price (₹ or $)
+                </label>
 
-    <input
-        type="number"
-        name="price"
-        step="0.01"
-        min="0"
-        value="{{ old('price', 0) }}"
-        class="w-full border-gray-300 rounded shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-    >
+                <input
+                    type="number"
+                    name="price"
+                    min="0"
+                    step="0.01"
+                    value="{{ old('price', 0) }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                >
+            </div>
 
-    @error('price')
-        <p class="text-red-500 text-sm mt-1">
-            {{ $message }}
-        </p>
-    @enderror
-</div>
+            {{-- Thumbnail --}}
+            <div>
+                <label class="block text-sm font-medium text-gray-700">
+                    Course Thumbnail
+                </label>
 
+                <input
+                    type="file"
+                    name="thumbnail"
+                    accept="image/*"
+                    class="mt-1 block w-full text-sm text-gray-600"
+                >
+            </div>
 
-            {{-- Submit --}}
-            <button
-                type="submit"
-                class="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-            >
-                Create Course
-            </button>
+            {{-- Actions --}}
+            <div class="flex items-center justify-between pt-4">
+                <a
+                    href="{{ route('admin.courses.index') }}"
+                    class="text-sm text-gray-600 hover:underline"
+                >
+                    ← Back to Courses
+                </a>
+
+                <button
+                    type="submit"
+                    class="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                >
+                    Create Course
+                </button>
+            </div>
 
         </form>
 

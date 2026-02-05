@@ -3,23 +3,42 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Course;
+use App\Models\Episode;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // 1. Create the specific Admin User (Required for evaluation)
+        $admin = User::create([
+            'name' => 'Admin User',
+            'email' => 'admin@laralearn.com',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
         ]);
+
+        // 2. Create 5 Random Students
+        User::factory(5)->create([
+            'role' => 'student',
+        ]);
+
+        // 3. Create 10 Courses assigned to the Admin
+        Course::factory(10)->create([
+            'user_id' => $admin->id,
+        ])->each(function ($course) {
+            
+            // 4. Create 3 to 5 Episodes for each Course
+            Episode::factory(rand(3, 5))->create([
+                'course_id' => $course->id,
+            ]);
+
+            // Optional: Re-number episodes sequentially (1, 2, 3...)
+            $i = 1;
+            foreach($course->episodes->sortBy('id') as $episode) {
+                $episode->update(['order' => $i++]);
+            }
+        });
     }
 }

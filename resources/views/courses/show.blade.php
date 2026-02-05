@@ -1,102 +1,50 @@
 <x-app-layout>
-    <div class="max-w-4xl mx-auto py-8">
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    
+                    {{-- Course Header --}}
+                    <div class="mb-8 border-b pb-6">
+                        <h1 class="text-4xl font-bold mb-4">{{ $course->title }}</h1>
+                        <p class="text-lg text-gray-600 mb-4">{{ $course->description }}</p>
+                        
+                        <div class="flex items-center text-sm text-gray-500 space-x-4">
+                            <span>🎓 Teacher: {{ $course->teacher->name ?? 'Unknown' }}</span>
+                            <span>📅 Published: {{ $course->created_at->format('M d, Y') }}</span>
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                                {{ $course->price > 0 ? '₹' . $course->price : 'Free' }}
+                            </span>
+                        </div>
+                    </div>
 
-        {{-- Page Header --}}
-        <div class="mb-6">
-            <h1 class="text-3xl font-bold text-gray-900">
-                Create New Course
-            </h1>
+                    {{-- Episodes List --}}
+                    <h2 class="text-2xl font-bold mb-4">Episodes ({{ $course->episodes->count() }})</h2>
+                    
+                    <div class="space-y-4">
+                        @forelse($course->episodes as $episode)
+                            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <div class="flex items-center space-x-3">
+                                    <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-600 text-white rounded-full text-sm font-bold">
+                                        {{ $loop->iteration }}
+                                    </span>
+                                    <h3 class="text-lg font-medium text-gray-900">
+                                        {{ $episode->title }}
+                                    </h3>
+                                </div>
+                                
+                                {{-- We will create this route next --}}
+                                {{-- <a href="{{ route('episodes.show', $episode) }}" class="text-indigo-600 hover:text-indigo-900 font-medium text-sm"> --}}
+                                <span class="text-gray-400 text-sm">Watch Now &rarr;</span>
+                                {{-- </a> --}}
+                            </div>
+                        @empty
+                            <p class="text-gray-500 italic">No episodes uploaded yet. Stay tuned!</p>
+                        @endforelse
+                    </div>
 
-            <p class="mt-2 text-gray-600">
-                Fill in the details below to add a new course.
-            </p>
+                </div>
+            </div>
         </div>
-
-        {{-- Create Course Form --}}
-        <form
-            method="POST"
-            action="{{ route('admin.courses.store') }}"
-            enctype="multipart/form-data"
-            class="space-y-6"
-        >
-            @csrf
-
-            {{-- Title --}}
-            <div>
-                <label class="block text-sm font-medium text-gray-700">
-                    Course Title
-                </label>
-
-                <input
-                    type="text"
-                    name="title"
-                    value="{{ old('title') }}"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    required
-                >
-            </div>
-
-            {{-- Description --}}
-            <div>
-                <label class="block text-sm font-medium text-gray-700">
-                    Description
-                </label>
-
-                <textarea
-                    name="description"
-                    rows="4"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                >{{ old('description') }}</textarea>
-            </div>
-
-            {{-- Price --}}
-            <div>
-                <label class="block text-sm font-medium text-gray-700">
-                    Price (₹ or $)
-                </label>
-
-                <input
-                    type="number"
-                    name="price"
-                    min="0"
-                    step="0.01"
-                    value="{{ old('price', 0) }}"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                >
-            </div>
-
-            {{-- Thumbnail --}}
-            <div>
-                <label class="block text-sm font-medium text-gray-700">
-                    Course Thumbnail
-                </label>
-
-                <input
-                    type="file"
-                    name="thumbnail"
-                    accept="image/*"
-                    class="mt-1 block w-full text-sm text-gray-600"
-                >
-            </div>
-
-            {{-- Actions --}}
-            <div class="flex items-center justify-between pt-4">
-                <a
-                    href="{{ route('admin.courses.index') }}"
-                    class="text-sm text-gray-600 hover:underline"
-                >
-                    ← Back to Courses
-                </a>
-
-                <button
-                    type="submit"
-                    class="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                >
-                    Create Course
-                </button>
-            </div>
-
-        </form>
-
     </div>
 </x-app-layout>
