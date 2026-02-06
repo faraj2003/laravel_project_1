@@ -1,59 +1,210 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Course Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A robust Learning Management System (LMS) built with Laravel 11. This application allows administrators to manage video courses and episodes, while providing a clean interface for users to browse and view content. It includes a fully functional REST API and Role-Based Access Control (RBAC).
 
-## About Laravel
+## 🚀 Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### User & Authentication
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Secure Authentication:** Powered by Laravel Breeze (Login, Registration, Password Reset, Email Verification).
+- **Role-Based Access Control:** Distinct `admin` and `user` roles.
+- **Profile Management:** Users can update profile information and change passwords.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Course Management (Admin)
 
-## Learning Laravel
+- **Admin Dashboard:** Dedicated area for content management protected by middleware.
+- **Course CRUD:** Create, Read, Update, and Delete courses.
+- **Episode Management:** Add multiple video episodes to specific courses.
+- **Publishing Workflow:** Draft/Publish toggle for courses (visible/hidden from public).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Public Interface
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Course Catalog:** Browse available published courses.
+- **Course Details:** View course metadata and associated episodes.
 
-## Laravel Sponsors
+### Developer Features
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **REST API:** JSON endpoints for consuming course data externally (Mobile App/SPA).
+- **Testing:** Comprehensive feature and unit tests using **Pest**.
+- **Modern Frontend:** Built with **Tailwind CSS** and **Vite**.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🛠 Tech Stack
 
-## Contributing
+- **Backend:** PHP 8.2+, Laravel 11
+- **Database:** MySQL
+- **Frontend:** Blade Templates, Tailwind CSS, Alpine.js
+- **Build Tool:** Vite
+- **Testing:** Pest / PHPUnit
+- **API Authentication:** Laravel Sanctum
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## ⚙️ Prerequisites
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Before you begin, ensure you have the following installed on your local machine:
 
-## Security Vulnerabilities
+- [PHP](https://www.php.net/downloads) (v8.2 or higher)
+- [Composer](https://getcomposer.org/)
+- [Node.js & NPM](https://nodejs.org/)
+- [MySQL](https://www.mysql.com/)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 📥 Installation
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/faraj2003/laravel_project_1.git
+cd laravel_project_1
+
+```
+
+2. **Install PHP dependencies**
+
+```bash
+composer install
+
+```
+
+3. **Install and compile frontend assets**
+
+```bash
+npm install
+npm run build
+
+```
+
+4. **Environment Configuration**
+   Copy the example environment file and configure your database credentials.
+
+```bash
+cp .env.example .env
+
+```
+
+Open `.env` and update the database settings:
+
+```ini
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
+```
+
+5. **Generate Application Key**
+
+```bash
+php artisan key:generate
+
+```
+
+6. **Run Migrations & Seeders**
+   Create the database tables and populate them with dummy data (users, courses, episodes).
+
+```bash
+php artisan migrate --seed
+
+```
+
+---
+
+## 🖥 Usage
+
+### Running the Server
+
+Start the local development server:
+
+```bash
+php artisan serve
+
+```
+
+Access the application at `http://localhost:8000`.
+
+### Accessing the Admin Panel
+
+To access the admin features, you must log in as a user with the `admin` role.
+
+1. Register a new account via the UI.
+2. Manually update your user role in the database:
+
+```sql
+UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com';
+
+```
+
+_(Alternatively, check `database/seeders/DatabaseSeeder.php` to see if a default admin is created automatically)._ 3. Once logged in as an admin, navigate to the Dashboard or specific Admin routes (e.g., `/admin/courses`).
+
+---
+
+## 🔗 API Documentation
+
+The application exposes endpoints for accessing course data.
+
+| Method | Endpoint            | Description                       |
+| ------ | ------------------- | --------------------------------- |
+| `GET`  | `/api/courses`      | List all published courses.       |
+| `GET`  | `/api/courses/{id}` | Get details of a specific course. |
+
+_Check `routes/api.php` and `app/Http/Controllers/Api/CourseController.php` for more details._
+
+---
+
+## 🧪 Testing
+
+This project uses **Pest** for testing. To run the test suite:
+
+```bash
+# Run all tests
+php artisan test
+
+# OR directly via Pest
+./vendor/bin/pest
+
+```
+
+Tests cover:
+
+- Authentication flows (Login, Registration).
+- Profile updates.
+- Admin middleware protection.
+- Course creation and public visibility.
+
+---
+
+## 📂 Project Structure Overview
+
+```text
+├── app
+│   ├── Http
+│   │   ├── Controllers
+│   │   │   ├── Admin       # Admin-only logic (Course management)
+│   │   │   ├── Api         # API logic
+│   │   │   └── Auth        # Authentication logic
+│   │   ├── Middleware      # AdminMiddleware.php (Role checks)
+│   │   └── Requests        # Form Validation (StoreCourseRequest, etc.)
+│   └── Models              # User, Course, Episode
+├── database
+│   ├── migrations          # DB Schema definitions
+│   └── seeders             # Dummy data generators
+├── resources
+│   └── views
+│       ├── admin           # Admin Blade templates
+│       ├── courses         # Public Course templates
+│       └── components      # Reusable Blade components
+├── routes
+│   ├── api.php             # API Routes
+│   └── web.php             # Web Routes
+└── tests                   # Feature and Unit tests
+
+```
+
+## 📄 License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
