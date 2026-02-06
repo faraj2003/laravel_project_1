@@ -24,7 +24,7 @@ class StoreCourseRequest extends FormRequest
             'title' => 'required|unique:courses,title|max:255',
             'description' => 'required',
             'price' => 'required|numeric|min:0',
-            'thumbnail' => 'required|image|max:2048', // Max 2MB
+            'thumbnail' => 'nullable|image|max:2048', // Max 2MB
         ];
     }
 }
