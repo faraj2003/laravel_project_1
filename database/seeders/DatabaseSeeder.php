@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
         $admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@laralearn.com',
-            'password' => bcrypt('password'),
+            'password' => 'password',
             'role' => 'admin',
         ]);
 
