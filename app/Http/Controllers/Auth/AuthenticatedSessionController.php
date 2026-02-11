@@ -24,27 +24,41 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Authenticate using the logic in LoginRequest
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        // Check for Admin Role
-        if (auth()->user()->role === 'admin') {
+        // Redirect based on the role selected in the form
+        if ($request->input('role') === 'admin') {
             return redirect()->route('admin.courses.index');
         }
 
         // Default Student Dashboard
         return redirect()->intended(route('dashboard', absolute: false));
     }
+
     /**
      * Destroy an authenticated session.
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        // Check which guard is currently logged in to clear the token properly
+        if (Auth::guard('admin')->check()) {
+            $user = Auth::guard('admin')->user();
+            Auth::guard('admin')->logout();
+        } else {
+            $user = Auth::guard('web')->user();
+            Auth::guard('web')->logout();
+        }
+
+        // Clear the remember_token in the database (from our previous fix)
+        if ($user) {
+            $user->remember_token = null;
+            $user->save();
+        }
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

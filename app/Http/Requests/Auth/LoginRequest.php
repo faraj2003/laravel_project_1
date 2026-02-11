@@ -29,6 +29,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'role' => ['required', 'string', 'in:student,admin'], // Validate the role
         ];
     }
 
@@ -41,7 +42,11 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // 1. Determine the guard based on the dropdown selection
+        $guard = $this->input('role') === 'admin' ? 'admin' : 'web';
+
+        // 2. Attempt to log in using that guard
+        if (! Auth::guard($guard)->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

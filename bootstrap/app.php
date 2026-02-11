@@ -11,11 +11,16 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function ($middleware) {
-    $middleware->alias([
-        'admin' => \App\Http\Middleware\AdminMiddleware::class,
-    ]);
-})
+    ->withMiddleware(function (Middleware $middleware) {
+        // Register the refresh middleware to the 'web' group
+        $middleware->web(append: [
+            \App\Http\Middleware\RefreshRememberToken::class,
+        ]);
+
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        ]);
+    })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

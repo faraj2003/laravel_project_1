@@ -4,14 +4,14 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <div class="mt-4 mb-4">
+        <div class="mb-4">
             <x-input-label for="role" :value="__('I am a...')" />
-            <select id="role" name="role" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
-                <option value="" disabled>Select your role</option>
-                <option value="student" selected>Student / Teacher</option>
+            <select id="role" name="role" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                <option value="student">Student / Teacher</option>
                 <option value="admin">Administrator</option>
             </select>
         </div>
+
         <div>
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
