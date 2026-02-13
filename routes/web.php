@@ -4,10 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\ComplaintController; // <--- Import Student Complaint Controller
+use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\Auth\AdminLoginController;
-use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController; // <--- Import Admin Complaint Controller
+use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController;
+use App\Http\Controllers\Admin\EpisodeController as AdminEpisodeController; // <--- Import Admin Episode Controller
 
 /* --------------------------------------------------------------------------
    PUBLIC & STUDENT ROUTES
@@ -55,10 +56,18 @@ Route::prefix('admin')
         
         Route::post('logout', [AdminLoginController::class, 'destroy'])->name('logout');
 
+        // Admin Dashboard
+        Route::get('/dashboard', function () {
+            return view('dashboard');
+        })->name('dashboard');
+
         // Course Management
         Route::resource('courses', AdminCourseController::class);
         Route::patch('courses/{course}/toggle', [AdminCourseController::class, 'togglePublish'])
             ->name('courses.toggle');
+
+        // Episode Management (Nested under courses) <--- Added for adding episodes to courses
+        Route::resource('courses.episodes', AdminEpisodeController::class);
 
         // Complaints Management (Admin Side)
         Route::get('complaints', [AdminComplaintController::class, 'index'])->name('complaints.index');

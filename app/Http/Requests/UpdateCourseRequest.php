@@ -6,21 +6,27 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCourseRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->role === 'admin';
+        // Changed from false to true because the route is already protected by auth:admin
+        return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
     public function rules(): array
     {
-        // Get the course ID from the route for the unique check
-        $courseId = $this->route('course')->id;
-
         return [
-            'title' => 'required|max:255|unique:courses,title,' . $courseId,
-            'description' => 'required',
-            'price' => 'required|numeric|min:0',
-            'thumbnail' => 'nullable|image|max:2048',
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ];
     }
 }

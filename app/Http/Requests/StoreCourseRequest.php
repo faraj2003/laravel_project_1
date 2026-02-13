@@ -11,8 +11,8 @@ class StoreCourseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Only allow admins to use this (Double check security)
-        return auth()->check() && auth()->user()->role === 'admin';
+        // Fix: Return true because the route in web.php is already protected by 'auth:admin'
+        return true;
     }
 
     /**
@@ -24,6 +24,7 @@ class StoreCourseRequest extends FormRequest
             'title' => 'required|unique:courses,title|max:255',
             'description' => 'required',
             'price' => 'required|numeric|min:0',
+            // 'thumbnail' is correct because your migration and model use that name
             'thumbnail' => 'nullable|image|max:2048', // Max 2MB
         ];
     }
