@@ -9,17 +9,27 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
+    /**
+     * Display a listing of all courses (Fast & Light).
+     */
     public function index()
     {
-        // 1. Fetch only published courses
-        // 2. Load 'teacher' and 'episodes' to prevent N+1 performance issues
-        $courses = Course::with(['teacher', 'episodes'])
-            ->where('is_published', true)
-            ->latest()
-            ->get();
-
-        // 3. Return as a Resource Collection
-        // This automatically adds the { "data": [...] } wrapper required by the spec.
+        // We only load the teacher here. 
+        // Episodes are NOT loaded, so they won't appear in the JSON.
+        $courses = Course::with('teacher')->where('is_published', true)->get();
+        
         return CourseResource::collection($courses);
+    }
+
+    /**
+     * Display a single course with its Syllabus (Detailed).
+     */
+    public function show(Course $course)
+    {
+        // EAGER LOADING: We tell Laravel to grab the episodes now.
+        // This triggers the 'whenLoaded' check in the Resource.
+        $course->load(['teacher', 'episodes']);
+        
+        return new CourseResource($course);
     }
 }

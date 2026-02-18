@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form action="{{ route('admin.courses.episodes.update', [$course, $episode]) }}" method="POST">
+                    <form action="{{ route('admin.courses.episodes.update', [$course, $episode]) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -20,14 +20,20 @@
                         </div>
 
                         <div class="mb-4">
-                            <x-input-label for="video_url" :value="__('Video URL')" />
-                            <x-text-input id="video_url" class="block mt-1 w-full" type="url" name="video_url" :value="old('video_url', $episode->video_url)" />
-                            <x-input-error :messages="$errors->get('video_url')" class="mt-2" />
+                            <x-input-label for="video_file" :value="__('Replace Video File (Optional)')" />
+                            <input id="video_file" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                   type="file" name="video_file" accept=".mp4,.mov,.ogg" />
+                            <p class="text-sm text-gray-500 mt-1">Current video: {{ $episode->video_path ? 'Uploaded' : 'None' }}</p>
+                            <x-input-error :messages="$errors->get('video_file')" class="mt-2" />
                         </div>
 
                         <div class="mb-4">
-                            <x-input-label for="duration" :value="__('Duration')" />
-                            <x-text-input id="duration" class="block mt-1 w-full" type="text" name="duration" :value="old('duration', $episode->duration)" />
+                            <x-input-label for="duration" :value="__('Duration (in minutes)')" />
+                            <x-text-input id="duration" class="block mt-1 w-full"
+                                          type="number" step="0.1"
+                                          name="duration"
+                                          :value="old('duration', $episode->duration ? $episode->duration / 60 : '')"
+                                          placeholder="e.g. 5.5" />
                             <x-input-error :messages="$errors->get('duration')" class="mt-2" />
                         </div>
 

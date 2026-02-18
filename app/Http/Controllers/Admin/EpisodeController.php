@@ -12,7 +12,8 @@ class EpisodeController extends Controller
 {
     public function index(Course $course)
     {
-        $episodes = $course->episodes()->orderBy('created_at', 'asc')->get();
+        // Orders by 'order' column so episodes appear in correct sequence
+        $episodes = $course->episodes()->orderBy('order', 'asc')->get();
         return view('admin.episodes.index', compact('course', 'episodes'));
     }
 
@@ -25,14 +26,26 @@ class EpisodeController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'video_url' => 'nullable|url', // Assuming video URL for now, can be file upload
-            'duration' => 'nullable|string',
+            'video_file' => 'required|file|mimes:mp4,mov,ogg|max:512000', // 500MB Max
+            'duration' => 'nullable|numeric', // 'numeric' allows decimals (e.g. 5.5 minutes)
         ]);
 
-        $course->episodes()->create($request->all());
+        $path = null;
+        if ($request->hasFile('video_file')) {
+            // Stores in: storage/app/public/course-content/{id}
+            $path = $request->file('video_file')->store('course-content/' . $course->id, 'public');
+        }
+
+        $course->episodes()->create([
+            'title' => $request->title,
+            'video_path' => $path,
+            // LOGIC: Convert Minutes (Input) to Seconds (Database)
+            'duration' => $request->duration ? (int)($request->duration * 60) : 0,
+            'order' => $course->episodes()->max('order') + 1,
+        ]);
 
         return redirect()->route('admin.courses.episodes.index', $course)
-            ->with('success', 'Episode created successfully.');
+            ->with('success', 'Episode uploaded successfully.');
     }
 
     public function edit(Course $course, Episode $episode)
@@ -44,11 +57,26 @@ class EpisodeController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'video_url' => 'nullable|url',
-            'duration' => 'nullable|string',
+            'video_file' => 'nullable|file|mimes:mp4,mov,ogg|max:512000',
+            'duration' => 'nullable|numeric',
         ]);
 
-        $episode->update($request->all());
+        $data = [
+            'title' => $request->title,
+            // LOGIC: Update duration if provided, otherwise keep old value
+            'duration' => $request->filled('duration') ? (int)($request->duration * 60) : $episode->duration,
+        ];
+
+        if ($request->hasFile('video_file')) {
+            // 1. Delete old video
+            if ($episode->video_path) {
+                Storage::disk('public')->delete($episode->video_path);
+            }
+            // 2. Store new video
+            $data['video_path'] = $request->file('video_file')->store('course-content/' . $course->id, 'public');
+        }
+
+        $episode->update($data);
 
         return redirect()->route('admin.courses.episodes.index', $course)
             ->with('success', 'Episode updated successfully.');
@@ -56,6 +84,10 @@ class EpisodeController extends Controller
 
     public function destroy(Course $course, Episode $episode)
     {
+        if ($episode->video_path) {
+            Storage::disk('public')->delete($episode->video_path);
+        }
+        
         $episode->delete();
 
         return redirect()->route('admin.courses.episodes.index', $course)

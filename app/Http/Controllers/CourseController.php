@@ -6,11 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Course;
 use Illuminate\Support\Str;
 
-
 class CourseController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of all published courses (Public Catalog).
      */
     public function index()
     {
@@ -22,15 +21,41 @@ class CourseController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display the user's personal dashboard (Enrolled Courses).
      */
-    public function create()
+    public function dashboard()
     {
-        //
+        // Fetch only courses the logged-in user is enrolled in
+        $courses = auth()->user()->courses()->with('teacher')->get();
+
+        return view('dashboard', compact('courses'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enroll the user in a course.
+     */
+    public function enroll(Course $course)
+    {
+        // Sync without detaching ensures we don't accidentally un-enroll them or enroll twice
+        $course->students()->syncWithoutDetaching([auth()->id()]);
+
+        return redirect()->route('dashboard')->with('success', 'You have successfully enrolled!');
+    }
+
+    /**
+     * Show the course details.
+     */
+    public function show(Course $course)
+    {
+        if (! $course->is_published && auth()->id() !== $course->user_id) {
+            abort(403);
+        }
+        $course->load('episodes');
+        return view('courses.show', compact('course'));
+    }
+
+    /**
+     * Store a newly created course.
      */
     public function store(Request $request)
     {
@@ -46,43 +71,6 @@ class CourseController extends Controller
             'slug' => Str::slug($request->title),
         ]);
         return redirect()->route('courses.show', $course);
-}
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Course $course)
-    {
-        if (! $course->is_published && auth()->id() !== $course->user_id) {
-            abort(403);
-        }
-        $course->load('episodes');
-        return view('courses.show', compact('course'));
-    }
-
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 
     public function togglePublish(Course $course)
@@ -92,5 +80,4 @@ class CourseController extends Controller
 
         return back();
     }
-
 }

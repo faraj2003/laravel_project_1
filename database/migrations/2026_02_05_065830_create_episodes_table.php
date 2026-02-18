@@ -15,7 +15,9 @@ return new class extends Migration
         $table->id();
         $table->foreignId('course_id')->constrained()->cascadeOnDelete();
         $table->string('title');
-        $table->text('content')->nullable();
+        $table->text('content')->nullable(); // You can keep or remove this if replacing with video
+        $table->string('video_path')->nullable(); // <--- ADD THIS
+        $table->integer('duration')->nullable();  // <--- ADD THIS (store in seconds)
         $table->integer('order')->default(0);
         $table->timestamps();
     });

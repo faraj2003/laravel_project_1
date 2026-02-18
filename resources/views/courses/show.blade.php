@@ -33,10 +33,11 @@
                                     </h3>
                                 </div>
                                 
-                                {{-- We will create this route next --}}
-                                {{-- <a href="{{ route('episodes.show', $episode) }}" class="text-indigo-600 hover:text-indigo-900 font-medium text-sm"> --}}
-                                <span class="text-gray-400 text-sm">Watch Now &rarr;</span>
-                                {{-- </a> --}}
+                                {{-- ENABLED LINK: Clicking this takes you to the video player --}}
+                                <a href="{{ route('episodes.show', $episode) }}" class="text-indigo-600 hover:text-indigo-900 font-medium text-sm flex items-center">
+                                    <span class="mr-1">Watch Now</span>
+                                    <span>&rarr;</span>
+                                </a>
                             </div>
                         @empty
                             <p class="text-gray-500 italic">No episodes uploaded yet. Stay tuned!</p>

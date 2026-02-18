@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Admin; // Assuming admins create courses, or use User
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -10,18 +11,14 @@ class CourseFactory extends Factory
 {
     public function definition(): array
     {
-        $title = $this->faker->sentence;
-        
+        $title = $this->faker->sentence(4);
         return [
-            // We will override this in the seeder to assign it to the Admin
-            'user_id' => User::factory(), 
+            'user_id' => User::factory(), // Creates a teacher for the course
             'title' => $title,
             'slug' => Str::slug($title),
-            'description' => $this->faker->paragraph,
-            'price' => $this->faker->randomFloat(2, 0, 100),
-            // Randomly publish some courses, keep others as drafts
-            'is_published' => $this->faker->boolean(70), 
-            'thumbnail' => null,
+            'description' => $this->faker->paragraph(3),
+            'is_published' => true,
+            'price' => $this->faker->randomFloat(2, 10, 100),
         ];
     }
 }

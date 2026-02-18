@@ -9,8 +9,6 @@ class CourseResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
@@ -18,14 +16,18 @@ class CourseResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'description' => $this->description,
-            // Requirement: Formatted Price
-            'price_formatted' => $this->price == 0 ? 'Free' : '$' . number_format($this->price, 2),
-            // Requirement: Calculated Field
-            'episodes_count' => $this->episodes->count(),
-            // Requirement: Teacher Name (Relationship)
-            'teacher' => $this->teacher->name,
-            'thumbnail' => $this->thumbnail ? asset('storage/' . $this->thumbnail) : null,
+            'summary' => $this->description,
+            
+            // Renaming teacher_id to instructor for a cleaner API
+            'instructor' => $this->teacher->name ?? 'Unknown Staff',
+            
+            'is_live' => (bool) $this->is_published,
+            
+            // NESTED DATA: This will be NULL in the index list, 
+            // but will show the full list in the "show" view.
+            'syllabus' => EpisodeResource::collection($this->whenLoaded('episodes')),
+            
+            'created_on' => $this->created_at->format('M d, Y'),
         ];
     }
 }
