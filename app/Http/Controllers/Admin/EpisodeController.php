@@ -28,6 +28,7 @@ class EpisodeController extends Controller
             'title' => 'required|string|max:255',
             'video_file' => 'required|file|mimes:mp4,mov,ogg|max:512000', // 500MB Max
             'duration' => 'nullable|numeric', // 'numeric' allows decimals (e.g. 5.5 minutes)
+            'content' => 'nullable|string', // NEW: Validate the description
         ]);
 
         $path = null;
@@ -36,12 +37,16 @@ class EpisodeController extends Controller
             $path = $request->file('video_file')->store('course-content/' . $course->id, 'public');
         }
 
+        // Safely get the current max order, default to 0 if it's the very first episode
+        $currentMaxOrder = $course->episodes()->max('order') ?? 0;
+
         $course->episodes()->create([
             'title' => $request->title,
             'video_path' => $path,
-            // LOGIC: Convert Minutes (Input) to Seconds (Database)
+            // Convert Minutes (Input) to Seconds (Database)
             'duration' => $request->duration ? (int)($request->duration * 60) : 0,
-            'order' => $course->episodes()->max('order') + 1,
+            'order' => $currentMaxOrder + 1,
+            'content' => $request->content, // NEW: Save the description to the database
         ]);
 
         return redirect()->route('admin.courses.episodes.index', $course)
@@ -59,16 +64,18 @@ class EpisodeController extends Controller
             'title' => 'required|string|max:255',
             'video_file' => 'nullable|file|mimes:mp4,mov,ogg|max:512000',
             'duration' => 'nullable|numeric',
+            'content' => 'nullable|string', // NEW: Validate the description
         ]);
 
         $data = [
             'title' => $request->title,
-            // LOGIC: Update duration if provided, otherwise keep old value
+            // Update duration if provided, otherwise keep old value
             'duration' => $request->filled('duration') ? (int)($request->duration * 60) : $episode->duration,
+            'content' => $request->content, // NEW: Update the description in the database
         ];
 
         if ($request->hasFile('video_file')) {
-            // 1. Delete old video
+            // 1. Delete old video from storage to save space
             if ($episode->video_path) {
                 Storage::disk('public')->delete($episode->video_path);
             }
@@ -84,6 +91,7 @@ class EpisodeController extends Controller
 
     public function destroy(Course $course, Episode $episode)
     {
+        // Clean up the physical file when an episode is deleted
         if ($episode->video_path) {
             Storage::disk('public')->delete($episode->video_path);
         }

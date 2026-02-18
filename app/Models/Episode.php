@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder; // Don't forget this import!
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class Episode extends Model
 {
     use HasFactory;
 
+    // Notice we included 'content' here so it can be saved to the database!
     protected $fillable = [
         'course_id',
         'title',
@@ -20,27 +21,21 @@ class Episode extends Model
     ];
 
     /**
-     * Global Scope: Always sort by the 'order' column automatically.
+     * The "booted" method of the model.
+     * This Global Scope ensures Episodes are ALWAYS fetched in the correct order.
      */
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::addGlobalScope('ordered', function (Builder $builder) {
+        static::addGlobalScope('order', function (Builder $builder) {
             $builder->orderBy('order', 'asc');
         });
     }
 
+    /**
+     * Get the course that owns the episode.
+     */
     public function course()
     {
         return $this->belongsTo(Course::class);
-    }
-
-    /**
-     * NEW: Users who have interacted with or completed this episode.
-     */
-    public function users()
-    {
-        return $this->belongsToMany(User::class)
-            ->withPivot('completed_at')
-            ->withTimestamps();
     }
 }

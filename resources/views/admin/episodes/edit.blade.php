@@ -23,7 +23,7 @@
                             <x-input-label for="video_file" :value="__('Replace Video File (Optional)')" />
                             <input id="video_file" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                                    type="file" name="video_file" accept=".mp4,.mov,.ogg" />
-                            <p class="text-sm text-gray-500 mt-1">Current video: {{ $episode->video_path ? 'Uploaded' : 'None' }}</p>
+                            <p class="text-sm text-gray-500 mt-1">Current video: <span class="font-bold text-indigo-600">{{ $episode->video_path ? 'Uploaded' : 'None' }}</span></p>
                             <x-input-error :messages="$errors->get('video_file')" class="mt-2" />
                         </div>
 
@@ -37,8 +37,15 @@
                             <x-input-error :messages="$errors->get('duration')" class="mt-2" />
                         </div>
 
+                        {{-- ADDED: The Content/Description Box --}}
+                        <div class="mb-6">
+                            <x-input-label for="content" :value="__('Episode Description / Content')" />
+                            <textarea id="content" name="content" rows="4" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('content', $episode->content) }}</textarea>
+                            <x-input-error :messages="$errors->get('content')" class="mt-2" />
+                        </div>
+
                         <div class="flex items-center justify-end mt-4">
-                            <x-primary-button class="ml-4">
+                            <x-primary-button class="ml-4 bg-indigo-600 hover:bg-indigo-700">
                                 {{ __('Update Episode') }}
                             </x-primary-button>
                         </div>

@@ -34,8 +34,15 @@
                             <x-input-error :messages="$errors->get('duration')" class="mt-2" />
                         </div>
 
+                        {{-- ADDED: The Content/Description Box --}}
+                        <div class="mb-6">
+                            <x-input-label for="content" :value="__('Episode Description / Content')" />
+                            <textarea id="content" name="content" rows="4" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('content') }}</textarea>
+                            <x-input-error :messages="$errors->get('content')" class="mt-2" />
+                        </div>
+
                         <div class="flex items-center justify-end mt-4">
-                            <x-primary-button class="ml-4">
+                            <x-primary-button class="ml-4 bg-indigo-600 hover:bg-indigo-700">
                                 {{ __('Upload Episode') }}
                             </x-primary-button>
                         </div>
