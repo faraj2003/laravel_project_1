@@ -1,54 +1,89 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Add Episode to: ') . $course->title }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form action="{{ route('admin.courses.episodes.store', $course) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-
-                        <div class="mb-4">
-                            <x-input-label for="title" :value="__('Episode Title')" />
-                            <x-text-input id="title" class="block mt-1 w-full" type="text" name="title" :value="old('title')" required autofocus />
-                            <x-input-error :messages="$errors->get('title')" class="mt-2" />
-                        </div>
-
-                        <div class="mb-4">
-                            <x-input-label for="video_file" :value="__('Video File (.mp4)')" />
-                            <input id="video_file" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                   type="file" name="video_file" accept=".mp4,.mov,.ogg" required />
-                            <x-input-error :messages="$errors->get('video_file')" class="mt-2" />
-                        </div>
-
-                        <div class="mb-4">
-                            <x-input-label for="duration" :value="__('Duration (in minutes)')" />
-                            <x-text-input id="duration" class="block mt-1 w-full"
-                                          type="number" step="0.1"
-                                          name="duration" :value="old('duration')"
-                                          placeholder="e.g. 5.5 (for 5 min 30 sec)" />
-                            <x-input-error :messages="$errors->get('duration')" class="mt-2" />
-                        </div>
-
-                        {{-- ADDED: The Content/Description Box --}}
-                        <div class="mb-6">
-                            <x-input-label for="content" :value="__('Episode Description / Content')" />
-                            <textarea id="content" name="content" rows="4" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('content') }}</textarea>
-                            <x-input-error :messages="$errors->get('content')" class="mt-2" />
-                        </div>
-
-                        <div class="flex items-center justify-end mt-4">
-                            <x-primary-button class="ml-4 bg-indigo-600 hover:bg-indigo-700">
-                                {{ __('Upload Episode') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
-                </div>
+        <div class="flex items-center gap-4">
+            <a href="{{ route('admin.episodes.index', ['course_id' => request('course_id')]) }}" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </a>
+            <div>
+                <h2 class="font-black text-2xl text-slate-900 leading-tight uppercase tracking-tight">
+                    {{ __('Initialize Module') }}
+                </h2>
+                <p class="text-sm text-slate-500 mt-1 font-medium">Add a new learning episode to the curriculum.</p>
             </div>
         </div>
-    </div>
+    </x-slot>
+
+    <form method="POST" action="{{ route('admin.episodes.store') }}" class="space-y-6">
+        @csrf
+        
+        @if(request('course_id'))
+            <input type="hidden" name="course_id" value="{{ request('course_id') }}">
+        @endif
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+                    <h3 class="text-lg font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Module Content</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label for="title" class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Module Title <span class="text-red-500">*</span></label>
+                            <input type="text" name="title" id="title" class="block w-full rounded-xl border-slate-200 px-4 py-3 text-slate-900 shadow-sm focus:border-brand-500 focus:ring-brand-500 sm:text-sm bg-slate-50 focus:bg-white transition-colors" placeholder="e.g., Advanced SQL Window Functions" value="{{ old('title') }}" required>
+                            @error('title') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label for="video_url" class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Media Asset URL</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                </div>
+                                <input type="url" name="video_url" id="video_url" class="block w-full rounded-xl border-slate-200 pl-10 pr-4 py-3 text-slate-900 shadow-sm focus:border-brand-500 focus:ring-brand-500 sm:text-sm bg-slate-50 focus:bg-white transition-colors" placeholder="https://..." value="{{ old('video_url') }}">
+                            </div>
+                            @error('video_url') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label for="description" class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Technical Summary / Notes</label>
+                            <textarea name="description" id="description" rows="6" class="block w-full rounded-xl border-slate-200 px-4 py-3 text-slate-900 shadow-sm focus:border-brand-500 focus:ring-brand-500 sm:text-sm bg-slate-50 focus:bg-white transition-colors resize-none" placeholder="Provide context, formulas, or key takeaways for this specific lesson...">{{ old('description') }}</textarea>
+                            @error('description') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 space-y-6">
+                
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                    <h3 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider border-b border-slate-100 pb-2">Pipeline Settings</h3>
+                    
+                    @if(!request('course_id'))
+                        <div class="mb-4">
+                            <label for="course_id" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Assign to Course <span class="text-red-500">*</span></label>
+                            <select name="course_id" id="course_id" class="block w-full rounded-xl border-slate-200 px-4 py-3 text-slate-900 shadow-sm focus:border-brand-500 focus:ring-brand-500 sm:text-sm bg-slate-50 focus:bg-white transition-colors" required>
+                                <option value="">Select Parent Course...</option>
+                                @foreach($courses ?? [] as $course)
+                                    <option value="{{ $course->id }}" {{ old('course_id') == $course->id ? 'selected' : '' }}>{{ $course->title }}</option>
+                                @endforeach
+                            </select>
+                            @error('course_id') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+                        </div>
+                    @endif
+                </div>
+
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl p-6 text-white sticky top-28">
+                    <h3 class="text-sm font-bold text-slate-300 mb-4 uppercase tracking-wider border-b border-slate-700 pb-2">Execution</h3>
+                    
+                    <div class="space-y-4">
+                        <button type="submit" class="w-full flex justify-center items-center gap-2 py-3.5 px-4 border border-transparent rounded-xl shadow-lg shadow-brand-500/20 text-sm font-black text-white bg-brand-600 hover:bg-brand-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 focus:ring-offset-slate-900 transition-all active:scale-95 uppercase tracking-widest">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Commit Module
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
 </x-app-layout>

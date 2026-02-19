@@ -1,43 +1,42 @@
 @props(['course'])
 
-<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow duration-300 flex flex-col h-full">
-    {{-- Thumbnail Section --}}
-    <div class="h-48 w-full bg-gray-200 relative">
-        @if($course->thumbnail)
-            <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" class="w-full h-full object-cover">
-        @else
-            <div class="flex items-center justify-center h-full text-gray-400">
-                <span class="text-4xl">📚</span>
-            </div>
-        @endif
+<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full">
+    <div class="relative h-48 bg-slate-100 overflow-hidden">
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        
+        <div class="absolute top-4 left-4 z-10">
+            <span class="px-3 py-1 bg-white/90 backdrop-blur-sm text-xs font-bold uppercase tracking-wider text-slate-700 rounded-full shadow-sm">
+                {{ $course->category ?? 'Technology' }}
+            </span>
+        </div>
 
-        {{-- Badge Logic --}}
-        @if($course->price == 0)
-            <span class="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded shadow">
-                FREE
+        <div class="absolute inset-0 bg-brand-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+            <span class="px-6 py-2 bg-white text-brand-600 font-bold rounded-full shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
+                View Details
             </span>
-        @else
-            <span class="absolute top-2 right-2 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded shadow">
-                ${{ number_format($course->price, 2) }}
-            </span>
-        @endif
+        </div>
     </div>
 
-    {{-- Content Section --}}
-    <div class="p-6 flex flex-col flex-grow justify-between">
-        <div>
-            <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{{ $course->title }}</h3>
-            <p class="text-gray-600 mb-4 line-clamp-2 text-sm">{{ $course->description }}</p>
-        </div>
+    <div class="p-6 flex flex-col flex-grow">
+        <h3 class="text-xl font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-brand-600 transition-colors">
+            {{ $course->title ?? 'Untitled Course' }}
+        </h3>
         
-        <div class="flex items-center justify-between border-t pt-4 mt-auto">
-            <div class="text-sm text-gray-500 flex items-center">
-                <span class="mr-1">👨‍🏫</span> {{ $course->teacher->name }}
+        <p class="text-sm text-slate-500 mb-6 line-clamp-3 font-light leading-relaxed">
+            {{ $course->description ?? 'No description available for this module. Click to explore learning objectives and curriculum.' }}
+        </p>
+
+        <div class="mt-auto pt-6 border-t border-slate-100">
+            <div class="flex items-center justify-between text-sm text-slate-500">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    <span class="font-medium">{{ $course->episodes_count ?? 0 }} Modules</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="font-medium text-slate-700">Active</span>
+                </div>
             </div>
-            
-            <a href="{{ route('courses.show', $course) }}" class="text-indigo-600 hover:text-indigo-900 font-medium text-sm flex items-center">
-                View <span class="ml-1">&rarr;</span>
-            </a>
         </div>
     </div>
 </div>
