@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div>
-                 <a href="{{ route('admin.episodes.index', ['course_id' => $course->id]) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition-all shadow-sm">
+                 <a href="{{ route('admin.courses.episodes.index', $course) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition-all shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
                     Manage Modules
                 </a>

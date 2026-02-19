@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center gap-4">
-            <a href="{{ route('admin.episodes.index', ['course_id' => $episode->course_id]) }}" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-sm">
+            <a href="{{ route('admin.courses.episodes.index', $course) }}" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             </a>
             <div>
@@ -13,7 +13,7 @@
         </div>
     </x-slot>
 
-    <form method="POST" action="{{ route('admin.episodes.update', $episode) }}" class="space-y-6">
+    <form method="POST" action="{{ route('admin.courses.episodes.update', [$course, $episode]) }}" class="space-y-6">
         @csrf
         @method('PUT')
 
