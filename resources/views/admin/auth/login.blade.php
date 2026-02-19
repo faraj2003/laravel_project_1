@@ -11,6 +11,8 @@
 
     <form method="POST" action="{{ route('admin.login') }}" class="space-y-6">
         @csrf
+        
+        <input type="hidden" name="role" value="admin">
 
         <div>
             <label for="email" class="block text-sm font-bold text-slate-700 uppercase tracking-wider">Admin Email</label>

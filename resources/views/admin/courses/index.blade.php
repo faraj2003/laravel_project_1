@@ -25,14 +25,6 @@
                 </div>
                 <input type="text" placeholder="Query database by ID or Title..." class="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors">
             </div>
-            
-            <div class="flex items-center gap-3 w-full md:w-auto">
-                <select class="block w-full md:w-40 pl-3 pr-10 py-2 text-sm border-slate-200 focus:ring-brand-500 focus:border-brand-500 rounded-xl bg-slate-50 text-slate-700 font-medium">
-                    <option>Status: All</option>
-                    <option>Published</option>
-                    <option>Draft</option>
-                </select>
-            </div>
         </div>
 
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -41,7 +33,7 @@
                     <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
                             <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">ID / Course Ref</th>
-                            <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Status</th>
+                            <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Status (Click to toggle)</th>
                             <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest text-center">Modules</th>
                             <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest text-right">System Actions</th>
                         </tr>
@@ -61,19 +53,25 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if(isset($course->is_published) && $course->is_published)
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Draft
-                                        </span>
-                                    @endif
+                                    <form action="{{ route('admin.courses.toggle-publish', $course) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="transition-all active:scale-95">
+                                            @if($course->is_published)
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200 transition-colors">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200 transition-colors">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Draft
+                                                </span>
+                                            @endif
+                                        </button>
+                                    </form>
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <span class="text-sm font-mono font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg">
-                                        {{ isset($course->episodes) ? $course->episodes->count() : 0 }}
+                                        {{ $course->episodes_count ?? $course->episodes->count() }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-right">
@@ -84,29 +82,24 @@
                                         <a href="{{ route('admin.courses.episodes.index', $course) }}" class="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" title="Manage Modules">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
                                         </a>
+                                        <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" onsubmit="return confirm('Secure Wipe: Delete course and all related module data?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Destroy Record">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-12 text-center">
-                                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
-                                    </div>
-                                    <h4 class="text-sm font-bold text-slate-900 mb-1">Database Empty</h4>
-                                    <p class="text-xs text-slate-500">No courses have been initialized in the system yet.</p>
-                                </td>
+                                <td colspan="4" class="px-6 py-12 text-center text-slate-500">No courses available.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            
-            @if(isset($courses) && method_exists($courses, 'links'))
-                <div class="px-6 py-4 border-t border-slate-200 bg-slate-50">
-                    {{ $courses->links() }}
-                </div>
-            @endif
         </div>
     </div>
 </x-app-layout>
