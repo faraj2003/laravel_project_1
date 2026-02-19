@@ -24,25 +24,23 @@ class CourseController extends Controller
         return view('admin.courses.create');
     }
 
-    // UPDATED: Now uses StoreCourseRequest
     public function store(StoreCourseRequest $request)
     {
-        // 1. Initialize path as null
         $path = null;
 
-        // 2. Check if image was uploaded before trying to store it
         if ($request->hasFile('thumbnail')) {
             $path = $request->file('thumbnail')->store('thumbnails', 'public');
         }
 
-        // 3. Create Course
         $course = Course::create([
             'user_id' => auth()->id(),
             'title' => $request->title,
             'slug' => Str::slug($request->title),
             'description' => $request->description,
-            'price' => $request->price,
-            'thumbnail' => $path, // This will be null if no image is uploaded
+            'price' => $request->price ?? 0, 
+            'category' => $request->category, 
+            'is_published' => $request->has('is_published'), // Now properly catches the checkbox
+            'thumbnail' => $path, 
         ]);
 
         Log::info("Course Created: ID {$course->id} - {$course->title} by User " . auth()->id());
@@ -55,17 +53,13 @@ class CourseController extends Controller
         return view('admin.courses.edit', compact('course'));
     }
 
-    // UPDATED: Now uses UpdateCourseRequest
     public function update(UpdateCourseRequest $request, Course $course)
     {
-        // 1. Validation is auto-handled by the Request class now.
-
-        $data = $request->only(['title', 'description', 'price']);
+        $data = $request->only(['title', 'description', 'price', 'category']);
         $data['slug'] = Str::slug($request->title);
+        $data['is_published'] = $request->has('is_published'); // Now properly catches the checkbox
 
-        // 2. Handle Image Update
         if ($request->hasFile('thumbnail')) {
-            // Delete old image if exists
             if ($course->thumbnail) {
                 Storage::disk('public')->delete($course->thumbnail);
             }
@@ -79,7 +73,6 @@ class CourseController extends Controller
 
     public function destroy(Course $course)
     {
-        // Delete image file
         if ($course->thumbnail) {
             Storage::disk('public')->delete($course->thumbnail);
         }
