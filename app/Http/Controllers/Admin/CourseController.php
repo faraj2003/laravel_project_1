@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\User;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use Illuminate\Http\Request;
@@ -37,9 +38,9 @@ class CourseController extends Controller
             'title' => $request->title,
             'slug' => Str::slug($request->title),
             'description' => $request->description,
-            'price' => $request->price ?? 0, 
+            'price' => $request->price ?? 0, // Fallback safely to 0
             'category' => $request->category, 
-            'is_published' => $request->has('is_published'), // Now properly catches the checkbox
+            'is_published' => $request->has('is_published'),
             'thumbnail' => $path, 
         ]);
 
@@ -50,14 +51,18 @@ class CourseController extends Controller
 
     public function edit(Course $course)
     {
-        return view('admin.courses.edit', compact('course'));
+        // Fetch students and load enrolled ones for the Access Control box
+        $students = User::where('role', 'student')->get();
+        $course->load('students');
+
+        return view('admin.courses.edit', compact('course', 'students'));
     }
 
     public function update(UpdateCourseRequest $request, Course $course)
     {
         $data = $request->only(['title', 'description', 'price', 'category']);
         $data['slug'] = Str::slug($request->title);
-        $data['is_published'] = $request->has('is_published'); // Now properly catches the checkbox
+        $data['is_published'] = $request->has('is_published');
 
         if ($request->hasFile('thumbnail')) {
             if ($course->thumbnail) {
@@ -86,5 +91,23 @@ class CourseController extends Controller
         $course->is_published = ! $course->is_published;
         $course->save();
         return back()->with('success', 'Publish status updated.');
+    }
+
+    // --- NEW ENROLLMENT METHODS --- //
+    
+    public function enrollStudent(Request $request, Course $course)
+    {
+        $request->validate(['user_id' => 'required|exists:users,id']);
+        $course->students()->syncWithoutDetaching([$request->user_id]);
+        
+        return back()->with('success', 'Student access granted successfully.');
+    }
+
+    public function removeStudent(Request $request, Course $course)
+    {
+        $request->validate(['user_id' => 'required|exists:users,id']);
+        $course->students()->detach($request->user_id);
+        
+        return back()->with('success', 'Student access revoked.');
     }
 }

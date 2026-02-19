@@ -15,7 +15,7 @@ class CourseController extends Controller
     {
         $courses = Course::with('teacher')
             ->where('is_published', true)
-            ->get();
+            ->paginate(12);
 
         return view('courses.index', compact('courses'));
     }
@@ -39,7 +39,9 @@ class CourseController extends Controller
         // Sync without detaching ensures we don't accidentally un-enroll them or enroll twice
         $course->students()->syncWithoutDetaching([auth()->id()]);
 
-        return redirect()->route('dashboard')->with('success', 'You have successfully enrolled!');
+        // Redirect back to the Course page, NOT the dashboard!
+        return redirect()->route('courses.show', $course)
+                         ->with('success', 'You have successfully enrolled! You can now access all modules.');
     }
 
     /**

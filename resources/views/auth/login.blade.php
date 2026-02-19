@@ -8,6 +8,7 @@
 
     <form method="POST" action="{{ route('login') }}" class="space-y-6">
         @csrf
+        <input type="hidden" name="role" value="student">
 
         <div>
             <label for="email" class="block text-sm font-medium text-slate-700">Email Address</label>

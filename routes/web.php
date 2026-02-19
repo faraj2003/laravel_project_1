@@ -68,7 +68,9 @@ Route::prefix('admin')
 
         Route::resource('courses', AdminCourseController::class);
         Route::patch('courses/{course}/toggle', [AdminCourseController::class, 'togglePublish'])
-            ->name('courses.toggle');
+            ->name('courses.toggle-publish');
+        Route::post('courses/{course}/enroll', [AdminCourseController::class, 'enrollStudent'])->name('courses.enroll');
+        Route::delete('courses/{course}/remove-student', [AdminCourseController::class, 'removeStudent'])->name('courses.remove-student');
 
         Route::resource('courses.episodes', AdminEpisodeController::class);
 

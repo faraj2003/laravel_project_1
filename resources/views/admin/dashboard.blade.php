@@ -1,168 +1,75 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-4">
             <div>
-                <h2 class="font-black text-2xl text-slate-900 leading-tight uppercase tracking-tight">
-                    {{ __('Admin Command Center') }}
+                <h2 class="font-black text-2xl text-slate-900 leading-tight tracking-tight">
+                    Admin Control Panel 🛡️
                 </h2>
-                <p class="text-sm text-slate-500 mt-1 font-medium">System overview and Business Intelligence metrics.</p>
+                <p class="text-sm text-slate-500 mt-1 font-medium">System overview and enterprise curriculum management.</p>
             </div>
-            <div class="flex gap-3">
-                <button class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-50 transition-colors shadow-sm">
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Export BI Report
-                </button>
-                <a href="{{ route('admin.courses.create') }}" class="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-slate-800 transition-colors shadow-sm">
+            <div>
+                <a href="{{ route('admin.courses.create') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 text-white text-sm font-bold rounded-xl hover:bg-brand-500 transition-all shadow-sm active:scale-95">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    New Course
+                    Initialize Course
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="space-y-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-colors">
-                <div class="absolute right-0 top-0 w-24 h-24 bg-blue-50 rounded-bl-full -z-10 group-hover:bg-blue-100 transition-colors"></div>
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Users</h3>
-                <div class="flex items-end gap-3">
-                    <span class="text-4xl font-black text-slate-900">2,845</span>
-                    <span class="text-sm font-bold text-emerald-500 mb-1 flex items-center">
-                        <svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-                        12%
-                    </span>
+    <div class="space-y-8 py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600 shrink-0 shadow-inner">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <div>
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-0.5">Active Courses</p>
+                    <p class="text-2xl font-black text-slate-900 leading-none">{{ \App\Models\Course::count() }}</p>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-brand-200 transition-colors">
-                <div class="absolute right-0 top-0 w-24 h-24 bg-brand-50 rounded-bl-full -z-10 group-hover:bg-brand-100 transition-colors"></div>
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Active Courses</h3>
-                <div class="flex items-end gap-3">
-                    <span class="text-4xl font-black text-slate-900">48</span>
-                    <span class="text-sm font-bold text-slate-400 mb-1">Modules</span>
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 shadow-inner">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-0.5">Total Students</p>
+                    <p class="text-2xl font-black text-slate-900 leading-none">{{ \App\Models\User::where('role', 'student')->count() }}</p>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-purple-200 transition-colors">
-                <div class="absolute right-0 top-0 w-24 h-24 bg-purple-50 rounded-bl-full -z-10 group-hover:bg-purple-100 transition-colors"></div>
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Avg Completion</h3>
-                <div class="flex items-end gap-3">
-                    <span class="text-4xl font-black text-slate-900">64%</span>
-                    <span class="text-sm font-bold text-emerald-500 mb-1 flex items-center">
-                        <svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-                        4%
-                    </span>
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 shrink-0 shadow-inner">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-colors">
-                <div class="absolute right-0 top-0 w-24 h-24 bg-amber-50 rounded-bl-full -z-10 group-hover:bg-amber-100 transition-colors"></div>
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Pending Tickets</h3>
-                <div class="flex items-end gap-3">
-                    <span class="text-4xl font-black text-slate-900">3</span>
-                    <span class="text-sm font-bold text-amber-600 mb-1">Requires action</span>
+                <div>
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-0.5">Total Modules</p>
+                    <p class="text-2xl font-black text-slate-900 leading-none">{{ \App\Models\Episode::count() }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <div class="lg:col-span-1 space-y-8">
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                    <h3 class="text-lg font-bold text-slate-900 mb-4">Database Pipeline</h3>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100">
-                            <span class="text-sm font-semibold text-slate-600">SQL Read Latency</span>
-                            <span class="text-sm font-mono font-bold text-emerald-600">12ms</span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100">
-                            <span class="text-sm font-semibold text-slate-600">Active Queries</span>
-                            <span class="text-sm font-mono font-bold text-brand-600">142</span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100">
-                            <span class="text-sm font-semibold text-slate-600">Cache Hit Ratio</span>
-                            <span class="text-sm font-mono font-bold text-emerald-600">98.4%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-lg p-6 text-white">
-                    <h3 class="text-lg font-bold mb-2">Management Links</h3>
-                    <ul class="space-y-2 mt-4">
-                        <li>
-                            <a href="{{ route('admin.courses.index') }}" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800 transition-colors group">
-                                <div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center group-hover:text-brand-400 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                                </div>
-                                <span class="font-medium text-sm text-slate-300 group-hover:text-white">Manage Courses Library</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.complaints.index') }}" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800 transition-colors group">
-                                <div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center group-hover:text-amber-400 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                                </div>
-                                <span class="font-medium text-sm text-slate-300 group-hover:text-white">Review User Complaints</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mt-8">
+            <div class="p-6 border-b border-slate-100">
+                <h3 class="text-lg font-black text-slate-900 tracking-tight">System Navigation</h3>
             </div>
-
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden h-full flex flex-col">
-                    <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                        <h3 class="text-lg font-bold text-slate-900">Recent Course Enrollments</h3>
-                        <button class="text-sm font-bold text-brand-600 hover:text-brand-500">View Master Log &rarr;</button>
+            <div class="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+                <a href="{{ route('admin.courses.index') }}" class="p-8 group hover:bg-slate-50 transition-colors">
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center mb-4 group-hover:-translate-y-1 transition-transform shadow-inner">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
                     </div>
-                    <div class="p-0 flex-grow">
-                        <table class="w-full text-left text-sm whitespace-nowrap">
-                            <thead class="bg-white uppercase text-slate-500 font-bold text-xs tracking-wider border-b border-slate-200">
-                                <tr>
-                                    <th class="px-6 py-4">User</th>
-                                    <th class="px-6 py-4">Course ID</th>
-                                    <th class="px-6 py-4">Status</th>
-                                    <th class="px-6 py-4 text-right">Timestamp</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 text-slate-700">
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="px-6 py-4 font-medium">john.doe@enterprise.com</td>
-                                    <td class="px-6 py-4 font-mono text-slate-500">CRS-8832</td>
-                                    <td class="px-6 py-4">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">Active</span>
-                                    </td>
-                                    <td class="px-6 py-4 text-right text-slate-400 font-mono">2 mins ago</td>
-                                </tr>
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="px-6 py-4 font-medium">sara.smith@corp.com</td>
-                                    <td class="px-6 py-4 font-mono text-slate-500">CRS-1094</td>
-                                    <td class="px-6 py-4">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-800">Completed</span>
-                                    </td>
-                                    <td class="px-6 py-4 text-right text-slate-400 font-mono">14 mins ago</td>
-                                </tr>
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="px-6 py-4 font-medium">mike.ross@legal.net</td>
-                                    <td class="px-6 py-4 font-mono text-slate-500">CRS-5521</td>
-                                    <td class="px-6 py-4">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">Active</span>
-                                    </td>
-                                    <td class="px-6 py-4 text-right text-slate-400 font-mono">1 hour ago</td>
-                                </tr>
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="px-6 py-4 font-medium text-slate-400 italic">Data stream ended</td>
-                                    <td class="px-6 py-4"></td>
-                                    <td class="px-6 py-4"></td>
-                                    <td class="px-6 py-4"></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <h4 class="text-base font-bold text-slate-900 mb-1">Course Directory</h4>
+                    <p class="text-sm text-slate-500">Manage all existing courses, adjust visibility, and grant student access.</p>
+                </a>
+                <a href="{{ route('admin.complaints.index') }}" class="p-8 group hover:bg-slate-50 transition-colors">
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4 group-hover:-translate-y-1 transition-transform shadow-inner">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     </div>
-                </div>
+                    <h4 class="text-base font-bold text-slate-900 mb-1">Support Tickets</h4>
+                    <p class="text-sm text-slate-500">Review and resolve student complaints and system feedback.</p>
+                </a>
             </div>
-
         </div>
     </div>
 </x-app-layout>
