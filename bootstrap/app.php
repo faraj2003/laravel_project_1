@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+        $middleware->alias([
+            'honeypot' => \App\Http\Middleware\CheckHoneypot::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -8,6 +8,12 @@
 
     <form method="POST" action="{{ route('login') }}" class="space-y-6">
         @csrf
+        
+        <div style="display: none;">
+            <label for="phone_number">Phone Number</label>
+            <input type="text" name="phone_number" id="phone_number" value="">
+        </div>
+
         <input type="hidden" name="role" value="student">
 
         <div>

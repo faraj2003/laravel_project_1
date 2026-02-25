@@ -7,6 +7,11 @@
     <form method="POST" action="{{ route('register') }}" class="space-y-5">
         @csrf
 
+        <div style="display: none;">
+            <label for="phone_number">Phone Number</label>
+            <input type="text" name="phone_number" id="phone_number" value="">
+        </div>
+
         <div>
             <label for="name" class="block text-sm font-medium text-slate-700">Full Name</label>
             <div class="mt-1">

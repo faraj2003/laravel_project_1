@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('complaints', ComplaintController::class)->only(['index', 'create', 'store']);
 });
 
-require __DIR__.'/auth.php'; 
+require __DIR__.'/auth.php';
 
 /* --------------------------------------------------------------------------
    ADMIN ROUTES
@@ -51,19 +51,19 @@ require __DIR__.'/auth.php';
 */
 Route::prefix('admin')->middleware('guest:admin')->group(function () {
     Route::get('login', [AdminLoginController::class, 'create'])->name('admin.login');
-    Route::post('login', [AdminLoginController::class, 'store']);
+    Route::post('login', [AdminLoginController::class, 'store'])->middleware('honeypot');
 });
 
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware('auth:admin') 
+    ->middleware('auth:admin')
     ->group(function () {
         
         Route::post('logout', [AdminLoginController::class, 'destroy'])->name('logout');
 
         // FIXED: Now loads the admin-specific dashboard view
         Route::get('/dashboard', function () {
-            return view('admin.dashboard'); 
+            return view('admin.dashboard');
         })->name('dashboard');
 
         Route::resource('courses', AdminCourseController::class);

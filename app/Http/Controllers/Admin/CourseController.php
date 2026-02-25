@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Str; // <--- ADDED THIS IMPORT
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
@@ -30,7 +30,12 @@ class CourseController extends Controller
         $path = null;
 
         if ($request->hasFile('thumbnail')) {
-            $path = $request->file('thumbnail')->store('thumbnails', 'public');
+            // SECURITY FIX: Rename file to a random UUID to prevent malicious filenames
+            $file = $request->file('thumbnail');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            
+            // Store it with the new safe name
+            $path = $file->storeAs('thumbnails', $filename, 'public');
         }
 
         $course = Course::create([
@@ -65,10 +70,17 @@ class CourseController extends Controller
         $data['is_published'] = $request->has('is_published');
 
         if ($request->hasFile('thumbnail')) {
+            // Delete old image if it exists
             if ($course->thumbnail) {
                 Storage::disk('public')->delete($course->thumbnail);
             }
-            $data['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
+
+            // SECURITY FIX: Rename file to a random UUID
+            $file = $request->file('thumbnail');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            
+            // Store it with the new safe name
+            $data['thumbnail'] = $file->storeAs('thumbnails', $filename, 'public');
         }
 
         $course->update($data);

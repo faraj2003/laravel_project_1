@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Episode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str; // <--- 1. ADD THIS IMPORT
 use Illuminate\Support\Facades\Storage;
 
 class EpisodeController extends Controller
@@ -38,7 +39,12 @@ class EpisodeController extends Controller
 
         $path = null;
         if ($request->hasFile('video_file')) {
-            $path = $request->file('video_file')->store('course-content/' . $course->id, 'public');
+            // SECURITY FIX: Generate random UUID filename
+            $file = $request->file('video_file');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            
+            // Store with safe name
+            $path = $file->storeAs('course-content/' . $course->id, $filename, 'public');
         }
 
         $currentMaxOrder = $course->episodes()->max('order') ?? 0;
@@ -46,7 +52,7 @@ class EpisodeController extends Controller
         $course->episodes()->create([
             'title' => $request->title,
             'video_path' => $path,
-            'video_url' => $request->video_url, // Added support for links
+            'video_url' => $request->video_url,
             'duration' => $request->duration ? (int)($request->duration * 60) : 0,
             'order' => $currentMaxOrder + 1,
             'content' => $request->content, 
@@ -81,7 +87,13 @@ class EpisodeController extends Controller
             if ($episode->video_path) {
                 Storage::disk('public')->delete($episode->video_path);
             }
-            $data['video_path'] = $request->file('video_file')->store('course-content/' . $course->id, 'public');
+
+            // SECURITY FIX: Generate random UUID filename
+            $file = $request->file('video_file');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            
+            // Store with safe name
+            $data['video_path'] = $file->storeAs('course-content/' . $course->id, $filename, 'public');
         }
 
         $episode->update($data);
